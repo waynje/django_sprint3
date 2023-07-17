@@ -15,10 +15,9 @@ def post_detail(request, post_id):
 
 
 def index(request):
-    posts = Post.objects.all().filter(
-                                      is_published=True,
-                                      category__is_published=True,
-    ).order_by('pub_date')[:5]
+    posts = Post.objects.all().filter(is_published=True,
+                                      category__is_published=True,).order_by
+    ('pub_date')[:5]
     context = {'post_list': posts}
     return render(request, 'blog/index.html', context)
 
