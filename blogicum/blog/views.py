@@ -1,22 +1,27 @@
 from django.shortcuts import render, get_object_or_404
-from blog.models import Post, Category
 from django.utils import timezone
+
+from blog.models import Post, Category
+
+
+def posts_filtered():
+    return Post.objects.filter(
+        pub_date__lte=timezone.now(),
+        is_published=True,
+        category__is_published=True
+    )
 
 
 def post_detail(request, post_id):
-    post = get_object_or_404(Post, id=post_id,
-                             is_published=True,
-                             category__is_published=True,
-                             pub_date__lte=timezone.now())
+    post = get_object_or_404(posts_filtered(),
+                             id=post_id,
+                             )
     context = {'post': post}
     return render(request, 'blog/detail.html', context)
 
 
 def index(request):
-    posts = Post.objects.all().filter(is_published=True,
-                                      category__is_published=True,
-                                      pub_date__lte=timezone.now()).order_by(
-        '-pub_date')[:5]
+    posts = posts_filtered().order_by('-pub_date')[:5]
     context = {'post_list': posts}
     return render(request, 'blog/index.html', context)
 
@@ -25,9 +30,6 @@ def category_posts(request, slug):
     category = get_object_or_404(Category,
                                  slug=slug,
                                  is_published=True)
-    posts = Post.objects.filter(is_published=True,
-                                category__is_published=True,
-                                category=category,
-                                pub_date__lte=timezone.now())
+    posts = posts_filtered().filter(category=category)
     context = {'category': category, 'post_list': posts}
     return render(request, 'blog/category.html', context)
