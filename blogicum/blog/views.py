@@ -15,22 +15,24 @@ def posts_filtered(posts):
 def post_detail(request, post_id):
     return render(request, 'blog/detail.html',
                   {'post': get_object_or_404(
-                   posts_filtered(Post.objects),
-                   id=post_id)})
+                   posts_filtered(Post.objects.all()),
+                   id=post_id)
+                   })
 
 
 def index(request):
     return render(request, 'blog/index.html',
-                  {'post_list': posts_filtered(Post.objects).order_by
-                   ('-pub_date')[:5]}
-                  )
+                  {'post_list': posts_filtered(Post.objects.all().
+                                               order_by('-pub_date'))[:5]
+                   })
 
 
 def category_posts(request, slug):
     category = get_object_or_404(Category,
                                  slug=slug,
                                  is_published=True)
-    posts = posts_filtered(Post.objects).filter(category=category)
+    posts = posts_filtered(Post.objects.all()).filter(category=category)
     return render(request, 'blog/category.html',
                   {'category': category,
-                   'post_list': posts})
+                   'post_list': posts
+                   })
