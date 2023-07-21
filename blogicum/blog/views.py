@@ -13,10 +13,10 @@ def posts_filtered(posts):
 
 
 def post_detail(request, post_id):
-    return render(request, 'blog/detail.html', {'post': get_object_or_404(
-                             posts_filtered(Post.objects),
-                             id=post_id,
-                             )})
+    return render(request, 'blog/detail.html',
+                  {'post': get_object_or_404(
+                    posts_filtered(Post.objects),
+                    id=post_id)})
 
 
 def index(request):
